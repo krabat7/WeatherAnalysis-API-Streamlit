@@ -47,15 +47,16 @@ if uploaded_file:
     ax.set_xlabel("Дата")
     ax.set_ylabel("Температура (°C)")
     ax.legend()
+    ax.grid(True)
     st.pyplot(fig)
 
     # График сезонного профиля
     st.subheader("Сезонный профиль температуры")
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.errorbar(
-        season_profile.index,  # Сезоны
-        season_profile['mean'],  # Средняя температура
-        yerr=season_profile['std'],  # Стандартное отклонение
+        season_profile.index,
+        season_profile['mean'],
+        yerr=season_profile['std'],
         fmt='o',
         label='Средняя температура в пределах ст. откл.',
         color='orange'
@@ -64,6 +65,7 @@ if uploaded_file:
     ax.set_xlabel("Сезон")
     ax.set_ylabel("Температура (°C)")
     ax.legend()
+    ax.grid(True)
     st.pyplot(fig)
 
     # График скользящего среднего для сезонного профиля
@@ -83,10 +85,8 @@ if uploaded_file:
         ax.set_xlabel("Дата")
         ax.set_ylabel("Температура (°C)")
         ax.legend()
+        ax.grid(True)
         st.pyplot(fig)
-    else:
-        st.warning("Недостаточно данных для построения скользящего среднего.")
-
 
     # Тренд температуры
     st.subheader("Оценка тренда температуры")
@@ -102,7 +102,7 @@ if uploaded_file:
     # Отображение аномалий
     st.subheader("Аномалии")
     if not anomalies.empty:
-        st.dataframe(anomalies[['timestamp', 'temperature']])
+        st.dataframe(anomalies[['city','timestamp', 'temperature']])
     else:
         st.write("Аномалий не обнаружено.")
 
@@ -124,7 +124,7 @@ if uploaded_file:
 
         except Exception as e:
             if "401" in str(e):
-                st.error("Неверный API ключ.")
+                st.error(e)
             elif "404" in str(e):
                 st.error("Город не найден.")
             else:
