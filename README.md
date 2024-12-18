@@ -1,2 +1,32 @@
 # WeatherAnalysis-API-Streamlit
-An analytical app for detecting weather anomalies and seasonal patterns using Python, pandas, Streamlit, and OpenWeatherMap API.
+
+Проект **WeatherAnalysis-API-Streamlit** представляет собой веб-приложение для анализа исторических данных о температуре, прогнозирования и отображения аномалий. Приложение использует **Streamlit** и включает API для получения текущей температуры.
+
+## Структура проекта
+
+### `app/`
+- **`app_streamlit.py`** — главный файл Streamlit-приложения, который предоставляет визуализацию данных и анализ погоды.
+- **`analysis/`**
+  - **`data_analysis.py`** — функции для анализа температурных данных, вычисления аномалий и трендов.
+- **`api/`**
+  - **`weather_api.py`** — функции для работы с API погоды, получения текущей температуры и проверки нормальности температуры для сезона.
+
+### `data_generation/`
+- **`generation.py`** — скрипт для генерации искусственных данных о температуре.
+- **`temperature_data.csv`** — файл с историческими данными о температуре для анализа.
+
+### `notebook/`
+- **`analysis.ipynb`** — Jupyter-ноутбук для предварительного анализа данных и вычислений.
+
+### Другие файлы
+- **`.gitignore`** — исключает ненужные файлы из репозитория.
+- **`LICENSE`** — лицензия на использование проекта.
+- **`requirements.txt`** — список зависимостей, необходимых для работы проекта.
+
+## Пример использования
+
+### Streamlit
+Приложение Streamlit доступно [здесь](https://je7j6hl2noenbjbmg9aizf.streamlit.app/).
+
+### Google Colab
+Запустить анализ можно в [Google Colab](https://colab.research.google.com/drive/1KMNnMDA7gdJgGAxjfaEFOOnPmD29bwfu?usp=sharing).
