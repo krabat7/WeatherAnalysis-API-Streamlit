@@ -88,6 +88,16 @@ if uploaded_file:
         ax.grid(True)
         st.pyplot(fig)
 
+    # Гистограмма распределения температур
+    st.subheader("Гистограмма распределения температур")
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.hist(city_data['temperature'], bins=30, color='skyblue', edgecolor='black')
+    ax.set_title(f"Гистограмма распределения температур в городе {city}")
+    ax.set_xlabel("Температура (°C)")
+    ax.set_ylabel("Частота")
+    ax.grid(True)
+    st.pyplot(fig)
+    
     # Тренд температуры
     st.subheader("Оценка тренда температуры")
     if trend_slope > 0:
@@ -105,16 +115,6 @@ if uploaded_file:
         st.dataframe(anomalies[['city','timestamp', 'temperature']])
     else:
         st.write("Аномалий не обнаружено.")
-
-    # Гистограмма распределения температур
-    st.subheader("Гистограмма распределения температур")
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.hist(city_data['temperature'], bins=30, color='skyblue', edgecolor='black')
-    ax.set_title(f"Гистограмма распределения температур в городе {city}")
-    ax.set_xlabel("Температура (°C)")
-    ax.set_ylabel("Частота")
-    ax.grid(True)
-    st.pyplot(fig)
 
     # API для текущей температуры
     st.subheader("Текущая погода")
