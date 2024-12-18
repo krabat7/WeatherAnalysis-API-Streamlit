@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from app.analysis.data_analysis import analyze_city, is_temperature_normal
-from app.api.weather_api import get_city_weather
+from analysis.data_analysis import analyze_city
+from api.weather_api import get_city_weather, is_temperature_normal
 
 st.title("Анализ и мониторинг погоды")
 
