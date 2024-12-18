@@ -1,0 +1,7 @@
+matplotlib
+seaborn
+pandas
+scikit-learn
+streamlit
+httpx
+nest_asyncio
