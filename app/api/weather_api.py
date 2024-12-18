@@ -21,7 +21,7 @@ def get_city_weather(API_KEY, city):
         temperature = data['main']['temp']
         return temperature, current_datetime
     else:
-        raise Exception(f"Ошибка при получении данных о погоде: {response.status_code} - {response.text}")
+        raise Exception(response.text)
 
 # Асинхронное обращение к API
 async def get_city_weather_async(API_KEY, city, session):
@@ -33,7 +33,7 @@ async def get_city_weather_async(API_KEY, city, session):
             temperature = data['main']['temp']
             return temperature, current_datetime
         else:
-            raise Exception(f"Ошибка при получении данных о погоде: {response.status} - {await response.text()}")
+            raise Exception(response.text)
 
 # функция определения: является ли текущая температура нормальной, исходя из исторических данных для текущего сезона.
 def is_temperature_normal(city, current_temp, current_datetime, season_profile):
