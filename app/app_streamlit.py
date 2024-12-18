@@ -45,7 +45,7 @@ if uploaded_file:
     ax.axhline(avg_temp, color='green', linestyle='--', label="Средняя температура")
     ax.set_title("Временной ряд температур")
     ax.set_xlabel("Дата")
-    ax.set_ylabel("Температура (°C)")
+    ax.set_ylabel("Температура")
     ax.legend()
     ax.grid(True)
     st.pyplot(fig)
@@ -63,7 +63,7 @@ if uploaded_file:
     )
     ax.set_title("Сезонный профиль")
     ax.set_xlabel("Сезон")
-    ax.set_ylabel("Температура (°C)")
+    ax.set_ylabel("Температура")
     ax.legend()
     ax.grid(True)
     st.pyplot(fig)
@@ -83,7 +83,7 @@ if uploaded_file:
         )
         ax.set_title("Сезонный профиль (скользящее среднее)")
         ax.set_xlabel("Дата")
-        ax.set_ylabel("Температура (°C)")
+        ax.set_ylabel("Температура")
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
@@ -93,11 +93,11 @@ if uploaded_file:
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.hist(city_data['temperature'], bins=30, color='skyblue', edgecolor='black')
     ax.set_title(f"Гистограмма распределения температур в городе {city}")
-    ax.set_xlabel("Температура (°C)")
+    ax.set_xlabel("Температура")
     ax.set_ylabel("Частота")
     ax.grid(True)
     st.pyplot(fig)
-    
+
     # Тренд температуры
     st.subheader("Оценка тренда температуры")
     if trend_slope > 0:
