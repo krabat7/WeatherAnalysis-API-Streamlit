@@ -37,18 +37,50 @@ if uploaded_file:
         st.write(f"Минимальная температура: {round(min_temp, 2)}°C")
         st.write(f"Максимальная температура: {round(max_temp, 2)}°C")
 
+    # API для текущей температуры
+    st.subheader("Текущая погода")
+    api_key = st.text_input("Введите API ключ OpenWeatherMap", type="password")
+    if api_key:
+        try:
+            # Получение текущей температуры
+            current_temp, current_datetime = get_city_weather(api_key, city)
+            st.write(f"Текущая температура в городе {city}: {current_temp}°C")
+
+            # Проверка, нормальна ли температура для текущего сезона
+            is_temp_normal = is_temperature_normal(city, current_temp, current_datetime, season_profile)
+            if is_temp_normal:
+                st.write(f"Текущая температура ({current_temp}) в городе {city} является нормальной в пределах текущего сезона.")
+            else:
+                st.write(f"Текущая температура ({current_temp}) в городе {city} не является нормальной в пределах текущего сезона.")
+
+        except Exception as e:
+            if "401" in str(e):
+                st.error(e)
+            elif "404" in str(e):
+                st.error("Город не найден.")
+            else:
+                st.error(f"Произошла ошибка: {e}")
+                
     # График временного ряда температур с выделением аномалий
+    city_data['rolling_avg'] = city_data['temperature'].rolling(window=30).mean()  # Среднее за 30 дней
     st.subheader("Временной ряд температур")
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(city_data['timestamp'], city_data['temperature'], label="Температура", color='blue')
     ax.scatter(anomalies['timestamp'], anomalies['temperature'], color='red', label="Аномалии", zorder=5)
-    ax.axhline(avg_temp, color='green', linestyle='--', label="Средняя температура")
+    ax.plot(city_data['timestamp'], city_data['rolling_avg'], label="Скользящее среднее (30 дней)", color='orange', linestyle='-')
     ax.set_title("Временной ряд температур")
     ax.set_xlabel("Дата")
     ax.set_ylabel("Температура")
     ax.legend()
     ax.grid(True)
     st.pyplot(fig)
+
+    # Отображение аномалий
+    st.subheader("Аномалии")
+    if not anomalies.empty:
+        st.dataframe(anomalies[['city','timestamp', 'temperature']])
+    else:
+        st.write("Аномалий не обнаружено.")
 
     # График сезонного профиля
     st.subheader("Сезонный профиль температуры")
@@ -100,42 +132,34 @@ if uploaded_file:
 
     # Тренд температуры
     st.subheader("Оценка тренда температуры")
+
+    # Вычисление линии тренда на основе trend_slope
+    start_temp = city_data['temperature'].iloc[0]  # Начальная температура
+    start_date = city_data['timestamp'].iloc[0]  # Начальная дата
+
+    # Расчет тренда с учетом начальной температуры и тренда
+    trend_y = start_temp + trend_slope * (city_data['timestamp'] - start_date).dt.days
+
+    # Отображение тренда
     if trend_slope > 0:
         st.write(f"Тренд положительный: температура увеличивается на {round(trend_slope, 5)}°C/день "
-                 f"или {round(trend_slope * 365, 2)}°C/год.")
+                f"или {round(trend_slope * 365, 2)}°C/год.")
     elif trend_slope < 0:
         st.write(f"Тренд отрицательный: температура уменьшается на {round(trend_slope, 5)}°C/день "
-                 f"или {round(trend_slope * 365, 2)}°C/год.")
+                f"или {round(trend_slope * 365, 2)}°C/год.")
     else:
         st.write("Температура остается неизменной.")
 
-    # Отображение аномалий
-    st.subheader("Аномалии")
-    if not anomalies.empty:
-        st.dataframe(anomalies[['city','timestamp', 'temperature']])
-    else:
-        st.write("Аномалий не обнаружено.")
+    # График с трендовой линией
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(city_data['timestamp'], city_data['temperature'], label="Температура", color='blue')
+    ax.plot(city_data['timestamp'], trend_y, label="Линия тренда", color='red', linestyle='--')
+    ax.set_title("Временной ряд температур с линией тренда")
+    ax.set_xlabel("Дата")
+    ax.set_ylabel("Температура")
+    ax.legend()
+    ax.grid(True)
+    st.pyplot(fig)
 
-    # API для текущей температуры
-    st.subheader("Текущая погода")
-    api_key = st.text_input("Введите API ключ OpenWeatherMap", type="password")
-    if api_key:
-        try:
-            # Получение текущей температуры
-            current_temp, current_datetime = get_city_weather(api_key, city)
-            st.write(f"Текущая температура в городе {city}: {current_temp}°C")
-
-            # Проверка, нормальна ли температура для текущего сезона
-            is_temp_normal = is_temperature_normal(city, current_temp, current_datetime, season_profile)
-            if is_temp_normal:
-                st.write(f"Текущая температура ({current_temp}) в городе {city} является нормальной в пределах текущего сезона.")
-            else:
-                st.write(f"Текущая температура ({current_temp}) в городе {city} не является нормальной в пределах текущего сезона.")
-
-        except Exception as e:
-            if "401" in str(e):
-                st.error(e)
-            elif "404" in str(e):
-                st.error("Город не найден.")
-            else:
-                st.error(f"Произошла ошибка: {e}")
+else:
+    st.write("Данные отсутсвуют. Загрузите файл с историческими данными в настройках.")
